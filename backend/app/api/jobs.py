@@ -22,6 +22,8 @@ from app.services.job_ats import (
 from app.services.recommender import (
     generate_recommendations
 )
+from app.services.job_analysis import get_readiness
+
 
 router = APIRouter(
     prefix="/jobs",
@@ -136,10 +138,17 @@ def match_job(
         result["missing_skills"]
     )
 
+    readiness = get_readiness(
+        result["job_match_score"]
+    )
+
     return {
-        "job_id": job.id,
-        "job_title": job.title,
-        "company": job.company,
-        **result,
-        "recommendations": recommendations
+    "job_id": job.id,
+    "job_title": job.title,
+    "company": job.company,
+    "job_match_score": result["job_match_score"],
+    "readiness": readiness,
+    "matched_skills": result["matched_skills"],
+    "missing_skills": result["missing_skills"],
+    "recommendations": recommendations
     }    
