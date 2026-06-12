@@ -1,23 +1,4 @@
-KNOWN_SKILLS = [
-    "Python",
-    "Java",
-    "C++",
-    "C",
-    "JavaScript",
-    "HTML",
-    "CSS",
-    "SQL",
-    "Git",
-    "GitHub",
-    "FastAPI",
-    "React",
-    "Node.js",
-    "MongoDB",
-    "PostgreSQL",
-    "Machine Learning",
-    "Data Structures",
-    "Algorithms"
-]
+from app.core.skills import KNOWN_SKILLS
 
 
 def extract_skills(text: str):
@@ -31,4 +12,4 @@ def extract_skills(text: str):
         if skill.lower() in text_lower:
             found_skills.append(skill)
 
-    return found_skills
+    return sorted(list(set(found_skills)))
