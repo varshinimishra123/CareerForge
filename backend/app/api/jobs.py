@@ -13,6 +13,16 @@ from app.services.job_matcher import (
     extract_job_skills
 )
 
+from app.models.resume import Resume
+
+from app.services.job_ats import (
+    calculate_job_match_score
+)
+
+from app.services.recommender import (
+    generate_recommendations
+)
+
 router = APIRouter(
     prefix="/jobs",
     tags=["Jobs"]
@@ -76,3 +86,60 @@ def get_job(
         }
 
     return job
+
+@router.post("/{job_id}/match")
+def match_job(
+    job_id: int,
+    db: Session = Depends(get_db)
+): 
+    
+    job = (
+        db.query(Job)
+        .filter(Job.id == job_id)
+        .first()
+    )
+
+    if not job:
+        return {
+            "message": "Job not found"
+        }
+
+    resume = (
+        db.query(Resume)
+        .order_by(Resume.id.desc())
+        .first()
+    )
+
+    if not resume:
+        return {
+            "message": "Resume not found"
+        }
+
+    resume_skills = [
+        skill.strip()
+        for skill in resume.skills.split(",")
+        if skill.strip()
+    ]
+
+    job_skills = [
+        skill.strip()
+        for skill in job.skills.split(",")
+        if skill.strip()
+    ]
+
+    result = calculate_job_match_score(
+        resume_skills,
+        job_skills
+    )
+
+    recommendations = generate_recommendations(
+        result["missing_skills"]
+    )
+
+    return {
+        "job_id": job.id,
+        "job_title": job.title,
+        "company": job.company,
+        **result,
+        "recommendations": recommendations
+    }    

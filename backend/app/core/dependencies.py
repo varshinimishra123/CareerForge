@@ -9,7 +9,7 @@ from app.models.user import User
 from app.core.security import verify_token
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login"
+    tokenUrl="auth/login"
 )
 
 
