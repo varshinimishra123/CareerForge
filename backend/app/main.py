@@ -5,12 +5,13 @@ from app.db.database import Base
 
 from app.models.user import User
 from app.models.resume import Resume
+from app.models.job import Job
 
 from app.api.auth import router as auth_router
 
 from app.api.users import router as users_router
 from app.api.resume import router as resume_router
-
+from app.api import jobs
 
 
 Base.metadata.create_all(bind=engine)
@@ -24,6 +25,7 @@ app.include_router(auth_router)
 app.include_router(users_router)
 
 app.include_router(resume_router)
+app.include_router(jobs.router)
 
 @app.get("/")
 def root():
