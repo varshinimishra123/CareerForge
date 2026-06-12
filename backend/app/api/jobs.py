@@ -1,29 +1,24 @@
 from fastapi import APIRouter
 from fastapi import Depends
-
 from sqlalchemy.orm import Session
-
 from app.db.database import get_db
-
 from app.models.job import Job
-
 from app.schemas.job import JobCreate
-
 from app.services.job_matcher import (
     extract_job_skills
 )
-
 from app.models.resume import Resume
-
 from app.services.job_ats import (
     calculate_job_match_score
 )
-
 from app.services.recommender import (
     generate_recommendations
 )
+from app.services.semantic_matcher import (
+    find_similar_jobs
+)
 from app.services.job_analysis import get_readiness
-
+from app.services.vector_store import collection
 
 router = APIRouter(
     prefix="/jobs",
@@ -52,6 +47,14 @@ def create_job(
     db.commit()
     db.refresh(new_job)
 
+    collection.add(
+    documents=[
+        new_job.description
+    ],
+    ids=[
+        str(new_job.id)
+    ]
+    )
     return {
         "job_id": new_job.id,
         "title": new_job.title,
@@ -69,6 +72,50 @@ def get_jobs(
 
     return jobs
 
+@router.get("/recommend")
+def recommend_jobs(
+    db: Session = Depends(get_db)
+):
+
+    latest_resume = (
+        db.query(Resume)
+        .order_by(Resume.id.desc())
+        .first()
+    )
+
+    if not latest_resume:
+        return {
+            "message": "No resume found"
+        }
+
+    results = find_similar_jobs(
+        latest_resume.extracted_text
+    )
+
+    recommended_jobs = []
+
+    job_ids = results["ids"][0]
+
+    for job_id in job_ids:
+
+        job = (
+            db.query(Job)
+            .filter(Job.id == int(job_id))
+            .first()
+        )
+
+        if job:
+            recommended_jobs.append(
+                {
+                    "job_id": job.id,
+                    "title": job.title,
+                    "company": job.company
+                }
+            )
+
+    return {
+        "recommended_jobs": recommended_jobs
+    }
 
 @router.get("/{job_id}")
 def get_job(
