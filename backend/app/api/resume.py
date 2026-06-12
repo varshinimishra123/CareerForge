@@ -12,6 +12,7 @@ from app.core.dependencies import get_current_user
 from app.services.skill_extractor import extract_skills
 
 from app.schemas.job import JobMatchRequest
+from app.services.recommender import generate_recommendations
 
 from app.services.job_matcher import (
     extract_job_skills,
@@ -104,9 +105,14 @@ def match_resume_to_job(
         job_skills
     )
 
+    recommendations = generate_recommendations(
+    result["missing_skills"]
+    )
+
     return {
         "resume_id": latest_resume.id,
         "resume_skills": resume_skills,
         "job_skills": job_skills,
-        **result
+        **result,
+        "recommendations": recommendations
     }
