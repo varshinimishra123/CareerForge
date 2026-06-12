@@ -19,6 +19,7 @@ from app.services.semantic_matcher import (
 )
 from app.services.job_analysis import get_readiness
 from app.services.vector_store import collection
+from app.services.embedding_model import model
 
 router = APIRouter(
     prefix="/jobs",
@@ -47,13 +48,20 @@ def create_job(
     db.commit()
     db.refresh(new_job)
 
+    embedding = model.encode(
+    new_job.description
+    ).tolist()
+
     collection.add(
-    documents=[
-        new_job.description
-    ],
-    ids=[
-        str(new_job.id)
-    ]
+        documents=[
+            new_job.description
+        ],
+        embeddings=[
+            embedding
+        ],
+        ids=[
+            str(new_job.id)
+        ]
     )
     return {
         "job_id": new_job.id,

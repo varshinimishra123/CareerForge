@@ -1,4 +1,5 @@
 from app.services.vector_store import collection
+from app.services.embedding_model import model
 
 
 def find_similar_jobs(
@@ -6,9 +7,13 @@ def find_similar_jobs(
     top_k: int = 5
 ):
 
+    query_embedding = model.encode(
+        resume_text
+    ).tolist()
+
     results = collection.query(
-        query_texts=[
-            resume_text
+        query_embeddings=[
+            query_embedding
         ],
         n_results=top_k
     )
