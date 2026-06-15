@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getResumeAnalysis } from "../../services/analysis";
+import { getResumeAnalysis } from "../../../services/analysis";
 
 export default function AnalysisPage() {
   const [analysis, setAnalysis] = useState<any>(null);

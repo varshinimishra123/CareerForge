@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getRecommendations } from "../../services/recommendations";
+import { getRecommendations } from "../../../services/recommendations";
 
 export default function RecommendationsPage() {
   const [jobs, setJobs] = useState<any[]>([]);

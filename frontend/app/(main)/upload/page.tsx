@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { uploadResume } from "../../services/resume";
+import { uploadResume } from "../../../services/resume";
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);

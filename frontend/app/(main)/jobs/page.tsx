@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   getJobs,
   matchJob,
-} from "../../services/jobs";
+} from "../../../services/jobs";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
