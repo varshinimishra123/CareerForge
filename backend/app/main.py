@@ -7,6 +7,12 @@ from app.models.user import User
 from app.models.resume import Resume
 from app.models.job import Job
 
+from app.models.interview import (
+    InterviewSession,
+    InterviewQuestion,
+    InterviewAnswer,
+)
+from app.api.interview import router as interview_router
 from app.api.auth import router as auth_router
 
 from app.api.users import router as users_router
@@ -41,6 +47,8 @@ app.include_router(dashboard_router)
 app.include_router(
     application.router
 )
+
+app.include_router(interview_router)
 
 @app.get("/")
 def root():
