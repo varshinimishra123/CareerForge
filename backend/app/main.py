@@ -15,6 +15,7 @@ from app.api import jobs
 from app.api.dashboard import router as dashboard_router
 
 from fastapi.middleware.cors import CORSMiddleware
+from app.api import application
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(
@@ -37,6 +38,9 @@ app.include_router(users_router)
 app.include_router(resume_router)
 app.include_router(jobs.router)
 app.include_router(dashboard_router)
+app.include_router(
+    application.router
+)
 
 @app.get("/")
 def root():

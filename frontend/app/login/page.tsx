@@ -20,7 +20,10 @@ export default function LoginPage() {
         email,
         password
       );
-
+      if (!data.access_token) {
+      alert("Invalid email or password");
+      return;
+      }
       localStorage.setItem(
         "access_token",
         data.access_token

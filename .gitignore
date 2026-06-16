@@ -18,3 +18,5 @@ backend/chroma_db/
 
 # Next.js
 .next/
+
+backend/uploads/

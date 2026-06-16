@@ -12,6 +12,10 @@ export async function login(email: string, password: string) {
     }),
   });
 
+  if (!response.ok) {
+    throw new Error("Invalid credentials");
+  }
+
   return response.json();
 }
 

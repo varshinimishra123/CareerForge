@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { uploadResume } from "../../../services/resume";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { Button } from "@/components/ui/button";
+
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
@@ -27,52 +36,97 @@ export default function UploadPage() {
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Upload Resume</h1>
-
-      <form onSubmit={handleUpload}>
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={(e) =>
-            setFile(
-              e.target.files?.[0] || null
-            )
-          }
-        />
-
-        <br />
-        <br />
-
-        <button type="submit">
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold">
           Upload Resume
-        </button>
-      </form>
+        </h1>
 
+        <p className="text-muted-foreground">
+          Upload your latest resume to
+          generate ATS analysis and job
+          recommendations.
+        </p>
+      </div>
+
+      {/* Upload Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Resume Upload
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <form
+            onSubmit={handleUpload}
+            className="space-y-4"
+          >
+            <input
+              type="file"
+              accept=".pdf"
+              className="block w-full border rounded-md p-2"
+              onChange={(e) =>
+                setFile(
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+
+            <Button type="submit">
+              Upload Resume
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Upload Result */}
       {result && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>Upload Successful</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              Upload Successful 🎉
+            </CardTitle>
+          </CardHeader>
 
-          <p>
-            Resume ID: {result.resume_id}
-          </p>
+          <CardContent className="space-y-4">
+            <div>
+              <p>
+                <strong>
+                  Resume ID:
+                </strong>{" "}
+                {result.resume_id}
+              </p>
 
-          <p>
-            Filename: {result.filename}
-          </p>
+              <p>
+                <strong>
+                  Filename:
+                </strong>{" "}
+                {result.filename}
+              </p>
+            </div>
 
-          <h3>Extracted Skills</h3>
+            <div>
+              <h3 className="font-semibold mb-2">
+                Extracted Skills
+              </h3>
 
-          <ul>
-            {result.skills?.map(
-              (skill: string) => (
-                <li key={skill}>
-                  {skill}
-                </li>
-              )
-            )}
-          </ul>
-        </div>
+              <div className="flex flex-wrap gap-2">
+                {result.skills?.map(
+                  (skill: string) => (
+                    <span
+                      key={skill}
+                      className="bg-slate-900 text-white px-3 py-1 rounded-full text-sm"
+                    >
+                      {skill}
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

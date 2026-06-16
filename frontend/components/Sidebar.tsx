@@ -1,15 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Upload,
   FileText,
   Briefcase,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 
+import { ClipboardList } from "lucide-react";
+
 export default function Sidebar() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    router.push("/login");
+  };
+
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen p-5">
       <h1 className="text-2xl font-bold mb-8">
@@ -41,6 +52,20 @@ export default function Sidebar() {
           <Sparkles size={18} />
           Recommendations
         </Link>
+
+        <Link
+        href="/applications" className="flex gap-3 items-center">
+        <ClipboardList size={18} />
+        Applications
+        </Link>
+
+        <button
+          onClick={handleLogout}
+          className="flex gap-3 items-center text-red-400"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
       </nav>
     </aside>
   );

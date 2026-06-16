@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { getResumeAnalysis } from "../../../services/analysis";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 export default function AnalysisPage() {
   const [analysis, setAnalysis] = useState<any>(null);
 
@@ -20,57 +27,113 @@ export default function AnalysisPage() {
   }, []);
 
   if (!analysis) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading analysis...
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Resume Analysis</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">
+          Resume Analysis
+        </h1>
 
-      <p>
-        <strong>ATS Score:</strong>{" "}
-        {analysis.ats_score}
-      </p>
+        <p className="text-muted-foreground">
+          AI-powered ATS evaluation and skill analysis
+        </p>
+      </div>
 
-      <h2>Skills</h2>
+      {/* ATS Score */}
+      <Card>
+        <CardHeader>
+          <CardTitle>ATS Score</CardTitle>
+        </CardHeader>
 
-      <ul>
-        {analysis.skills?.map(
-          (skill: string) => (
-            <li key={skill}>{skill}</li>
-          )
-        )}
-      </ul>
+        <CardContent>
+          <div className="text-5xl font-bold">
+            {analysis.ats_score}%
+          </div>
+        </CardContent>
+      </Card>
 
-      <h2>Strengths</h2>
+      {/* Skills */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Extracted Skills</CardTitle>
+        </CardHeader>
 
-<ul>
-  {analysis.strengths?.map(
-    (
-      strength: string,
-      index: number
-    ) => (
-      <li key={index}>
-        {strength}
-      </li>
-    )
-  )}
-</ul>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {analysis.skills?.map(
+              (skill: string) => (
+                <span
+                  key={skill}
+                  className="bg-slate-900 text-white px-3 py-1 rounded-full text-sm"
+                >
+                  {skill}
+                </span>
+              )
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-<h2>Areas to Improve</h2>
+      {/* Strengths */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Strengths
+          </CardTitle>
+        </CardHeader>
 
-<ul>
-  {analysis.weaknesses?.map(
-    (
-      weakness: string,
-      index: number
-    ) => (
-      <li key={index}>
-        {weakness}
-      </li>
-    )
-  )}
-</ul>
+        <CardContent>
+          <ul className="space-y-2">
+            {analysis.strengths?.map(
+              (
+                strength: string,
+                index: number
+              ) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-2"
+                >
+                  ✅ {strength}
+                </li>
+              )
+            )}
+          </ul>
+        </CardContent>
+      </Card>
+
+      {/* Weaknesses */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Areas to Improve
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <ul className="space-y-2">
+            {analysis.weaknesses?.map(
+              (
+                weakness: string,
+                index: number
+              ) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-2"
+                >
+                  ⚠️ {weakness}
+                </li>
+              )
+            )}
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   );
 }
